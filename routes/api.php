@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+Route::post('register', 'AuthController@register');
+Route::post('login', 'AuthController@login');
+Route::middleware('auth:api')->post('logout', 'AuthController@logout');
+
+Route::middleware('auth:api', 'role:manager')->group(function () {
+    Route::get('users', 'UserController@index');
+    Route::get('users/{id}', 'UserController@show');
+	Route::post('users', 'UserController@store'); 
+    Route::put('users/{id}', 'UserController@update'); 
+    Route::delete('users/{id}', 'UserController@destroy'); 
+
+    Route::get('requests', 'RequestController@index');
+    Route::get('requests/{id}', 'RequestController@show'); 
+    Route::post('requests', 'RequestController@store'); 
+    Route::put('requests/{id}', 'RequestController@update'); 
+    Route::delete('requests/{id}', 'RequestController@destroy'); 
+	
+	Route::post('requests', 'RequestController@store');
+    Route::get('user/requests', 'RequestController@getUserRequests');
+	
+    Route::get('manager/requests', 'RequestController@getAllRequests'); 
+    Route::patch('manager/requests/{id}/status', 'RequestController@updateRequestStatus'); 
+});
